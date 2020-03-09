@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser.add_argument("--code",type=str,default='kospi')
     parser.add_argument("--tax",type=str,default='n')
     parser.add_argument("--bal",type=int,default=10000000)
-    parser.add_argument("--reward",type=float,default=.2)
+    parser.add_argument("--reward",type=float,default=.02)
     
     FLAGs, _ = parser.parse_known_args()
     

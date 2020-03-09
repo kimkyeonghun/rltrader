@@ -1,22 +1,49 @@
-# 파이썬과 케라스를 이용한 딥러닝/강화학습 주식투자 - 퀀트 투자, 알고리즘 트레이딩을 위한 최첨단 해법 입문
+# 파이썬과 케라스를 이용한 강화학습 주식투자
 
-![표지](/img/front.jpg)
+## Action, State, Reward?
 
-강화학습은 스스로 학습하는 머신러닝 기법으로서 주식 데이터 학습에 잘 적용되는 기법입니다. 이 책은 파이썬을 이용한 강화학습 기반의 주식투자 시뮬레이션 프로그램을 개발하는 방법을 설명합니다. 이를 위해 이론과 코드 수준에서 상세한 설명을 덧붙였습니다. 이 책을 통해 딥러닝과 강화학습을 이해하고 이를 주식투자를 비롯한 다양한 도메인에서 활용할 수 있을 것입니다.
+## Environment Setting
 
-## 이 책에서 다루는 내용
-- 딥러닝과 강화학습 이론
-- 주식투자에 강화학습을 적용하는 법
-- 강화학습 기반의 주식투자 시스템 개발
-- 강화학습을 위한 실제 주식 데이터 획득 및 처리
-- 강화학습으로 주식 데이터를 학습하는 법
-- 학습한 강화학습 모델을 활용하는 법
-- 강화학습 기반의 주식투자 시스템을 커스터마이징하는 법
+## Train
 
-## 링크
-- [Quantylab](http://blog.quantylab.com/deep_learning_trading.html)
-- [위키북스](http://wikibook.co.kr/deep-learning-trading/)
-- [Yes24](http://www.yes24.com/24/goods/60890714?scode=032&OzSrank=1)
-- [교보문고](http://www.kyobobook.co.kr/product/detailViewKor.laf?barcode=9791158391065)
-- [인터파크](http://book.interpark.com/product/BookDisplay.do?_method=detail&sc.prdNo=284220801)
-- [알라딘](http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=146574503)
+`python main.py --code <stock_code> --tax <y or n> --bal <balance> --reward <delayed_reward_threshold>`
+
+- --code : 원하는 기업의 stock_code을 넣는다. 만약 해당 stock_code의 csv 파일을 가지고 있지 않으면 파일을 생성하며 가지고 있다면 어제 날짜까지 최신화하여 rewrite합니다. 
+  - defaul = kospi
+
+- --tax : 매매시 발생하는 거래세와 수수료를 고려하는지에 대한 여부를 나타냅니다.
+  - default = n
+
+- --bal : 학습시 초기 자금을 얼마로 할지 설정하는 option입니다.
+  - default = 10000000
+- --reward : 지연보상의 임계치를 설정하는 option입니다.
+  - default = .02(2%)
+
+학습하는 기간은 2018-01-01~2018-12-31이며 main.py의 60~61번 줄을 수정하여 바꿀 수 있습니다.
+
+![image-20200309164953425](C:\Users\kkh11\Desktop\rltrader-master\rltrader-master\img\train.png)
+
+위와 같이 학습이 됩니다.
+
+## Test
+
+`python main_test.py --code <stock_code> --tax <y or n> --bal --reward <delayed_reward_threshold>`
+
+Train과 같은 옵션을 가지고 있으며 해당 stock_code로 여러 model을 학습했을 수 있으므로 모델을 선택하는 화면으로 넘어 갑니다.
+
+![image-20200309171921506](C:\Users\kkh11\Desktop\rltrader-master\rltrader-master\img\test1.png)
+
+원하는 모델을 index로 선택을 하며 첫 model의 index는 0입니다.
+
+
+
+1 epoch만큼 학습된 모델을 바탕으로 진행을 하며 다음과 같이 결과를 얻을 수 있습니다.
+
+![image-20200309172108629](C:\Users\kkh11\Desktop\rltrader-master\rltrader-master\img\test2.png)
+
+이 경우에는 19,500원의 수익을 얻었음을 알 수 있습니다.
+
+## Visualizer
+
+
+

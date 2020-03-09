@@ -1,13 +1,39 @@
-import logging
 import os
+import argparse
+import logging
 import settings
 import data_manager
 from policy_learner import PolicyLearner
 
 
+def chooseModelver(stock_code):
+    print("\n",os.listdir('models/{}'.format(stock_code)),'\n')
+    idx = int(input("Select model number using index : "))
+    return os.listdir('models/{}'.format(stock_code))[idx]
+
+
 if __name__ == '__main__':
-    stock_code = '066570'  # 삼성전자
-    model_ver = '20200309120133'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--code",type=str,default='066570')
+    parser.add_argument("--tax",type=str,default='n')
+    parser.add_argument("--bal",type=int,default=10000000)
+    parser.add_argument("--reward",type=float,default=.02)
+
+    FLAGs, _ = parser.parse_known_args()
+    
+    stock_code = FLAGs.code
+    tax=FLAGs.tax
+    bal=FLAGs.bal
+    reward=FLAGs.reward
+
+    if tax=='y':
+        tax=True
+    else:
+        tax=False
+
+
+    model_ver = chooseModelver(stock_code)[6:-3]
 
     # 로그 기록
     log_dir = os.path.join(settings.BASE_DIR, 'logs/%s' % stock_code)
@@ -51,8 +77,8 @@ if __name__ == '__main__':
     # 비 학습 투자 시뮬레이션 시작
     policy_learner = PolicyLearner(
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
-        min_trading_unit=1, max_trading_unit=3)
-    policy_learner.trade(balance=10000000,
+        min_trading_unit=1, max_trading_unit=3,delayed_reward_threshold=reward,tax=tax)
+    policy_learner.trade(balance=bal,
                          model_path=os.path.join(
                              settings.BASE_DIR,
                              'models/{}/model_{}.h5'.format(stock_code, model_ver)))

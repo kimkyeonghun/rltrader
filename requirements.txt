@@ -1,3 +1,7 @@
-keras==2.2.4
-tensorflow=1.14.0
+pandas
+numpy
+matplotlib
+tensorflow
+keras
 mpl_finance
+pykrx
