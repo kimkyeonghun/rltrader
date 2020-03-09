@@ -21,7 +21,7 @@
 
 학습하는 기간은 2018-01-01~2018-12-31이며 main.py의 60~61번 줄을 수정하여 바꿀 수 있습니다.
 
-![train](.\img\train.png)
+![train](./img/train.png)
 
 위와 같이 학습이 됩니다.
 
@@ -31,7 +31,7 @@
 
 Train과 같은 옵션을 가지고 있으며 해당 stock_code로 여러 model을 학습했을 수 있으므로 모델을 선택하는 화면으로 넘어 갑니다.
 
-![test1](.\img\test1.png)
+![test1](./img/test1.png)
 
 원하는 모델을 index로 선택을 하며 첫 model의 index는 0입니다.
 
@@ -39,7 +39,7 @@ Train과 같은 옵션을 가지고 있으며 해당 stock_code로 여러 model�
 
 1 epoch만큼 학습된 모델을 바탕으로 진행을 하며 다음과 같이 결과를 얻을 수 있습니다.
 
-![test2](.\img\test2.png)
+![test2](./img/test2.png)
 
 이 경우에는 19,500원의 수익을 얻었음을 알 수 있습니다.
 
