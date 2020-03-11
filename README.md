@@ -13,9 +13,11 @@
 
 ## RLTrader 구조
 
-![rltrader](./img/rltrader.png)
+![rltrader](./img/rltraders.png)
 
 ## Environment Setting
+
+
 
 ## Train
 
