@@ -2,8 +2,8 @@ import numpy as np
 
 
 class Agent:
-    # 에이전트 상태가 구성하는 값 개수
-    STATE_DIM = 2  # 주식 보유 비율, 포트폴리오 가치 비율
+    # The number of values that agent status configures
+    STATE_DIM = 2  # stock holding ratio, portfolio value ratio
 
     # 행동
     ACTION_BUY = 0  # 매수
