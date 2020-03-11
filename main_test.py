@@ -7,15 +7,18 @@ from policy_learner import PolicyLearner
 
 
 def chooseModelver(stock_code):
-    print("\n",os.listdir('models/{}'.format(stock_code)),'\n')
-    idx = int(input("Select model number using index : "))
-    return os.listdir('models/{}'.format(stock_code))[idx]
+    try:
+        print("\n",os.listdir('models/{}'.format(stock_code)),'\n')
+        idx = int(input("Select model number using index : "))
+        return os.listdir('models/{}'.format(stock_code))[idx]
+    except:
+        raise settings.UndefinedModel()
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--code",type=str,default='066570')
+    parser.add_argument("--code",type=str,default='015760')
     parser.add_argument("--tax",type=str,default='n')
     parser.add_argument("--bal",type=int,default=10000000)
     parser.add_argument("--reward",type=float,default=.02)
@@ -54,8 +57,8 @@ if __name__ == '__main__':
     training_data = data_manager.build_training_data(prep_data)
 
     # 기간 필터링
-    training_data = training_data[(training_data['date'] >= '2019-01-01') &
-                                  (training_data['date'] <= '2019-01-31')]
+    training_data = training_data[(training_data['date'] >= '2020-01-01') &
+                                  (training_data['date'] <= '2020-02-28')]
     training_data = training_data.dropna()
 
     # 차트 데이터 분리

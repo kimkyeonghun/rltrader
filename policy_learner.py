@@ -20,6 +20,7 @@ class PolicyLearner:
         self.stock_code = stock_code  # 종목코드
         self.chart_data = chart_data
         self.environment = Environment(chart_data)  # 환경 객체
+        self.tax = tax
         # 에이전트 객체
         self.agent = Agent(self.environment,
                            min_trading_unit=min_trading_unit,
@@ -42,14 +43,15 @@ class PolicyLearner:
     def fit(
         self, num_epoches=1000, max_memory=60, balance=10000000,
         discount_factor=0, start_epsilon=.5, learning=True):
-        logging.info("LR: {lr}, DF: {discount_factor}, "
+        logging.info("\n\nLR: {lr}, DF: {discount_factor}, "
                     "TU: [{min_trading_unit}, {max_trading_unit}], "
-                    "DRT: {delayed_reward_threshold}".format(
+                    "DRT: {delayed_reward_threshold}, Tax: {tax}".format(
             lr=self.policy_network.lr,
             discount_factor=discount_factor,
             min_trading_unit=self.agent.min_trading_unit,
             max_trading_unit=self.agent.max_trading_unit,
-            delayed_reward_threshold=self.agent.delayed_reward_threshold
+            delayed_reward_threshold=self.agent.delayed_reward_threshold,
+            tax = self.tax
         ))
 
         # 가시화 준비

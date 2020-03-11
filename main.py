@@ -3,6 +3,7 @@ import sys
 import logging
 import argparse
 import settings
+import warnings
 import data_manager
 from data_loader import DataLoader
 from policy_learner import PolicyLearner
@@ -25,6 +26,9 @@ if __name__ == '__main__':
     reward=FLAGs.reward
 
     stock = DataLoader(stock_code)
+
+    if bal <= 0:
+        raise settings.BalanceUnderflow()
 
     if stock_code+".csv" not in [file for file in os.listdir('./data/chart_data') if file.endswith(".csv")]:
         stock.makeNewFile()
@@ -57,8 +61,8 @@ if __name__ == '__main__':
     training_data = data_manager.build_training_data(prep_data)
 
     # 기간 필터링
-    training_data = training_data[(training_data['date'] >= '2018-01-01') &
-                                  (training_data['date'] <= '2018-12-31')]
+    training_data = training_data[(training_data['date'] >= '2019-01-01') &
+                                  (training_data['date'] <= '2019-12-31')]
     training_data = training_data.dropna()
 
     # 차트 데이터 분리

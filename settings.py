@@ -86,3 +86,18 @@ def get_time_str():
     timestr = datetime.datetime.fromtimestamp(
         int(time.time())).strftime(FORMAT_DATETIME)
     return timestr
+
+
+class BalanceUnderflow(Exception):
+    def __init__(self):
+        self.message = "Initial Balance must be over 0"
+
+    def __str__(self):
+        return str(self.message)
+
+class UndefinedModel(Exception):
+    def __init__(self):
+        self.message = "This stock code's h5 model file isn't here"
+
+    def __str__(self):
+        return str(self.message)
