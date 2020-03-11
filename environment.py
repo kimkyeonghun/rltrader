@@ -1,6 +1,6 @@
 class Environment:
 
-    PRICE_IDX = 4  # 종가의 위치
+    PRICE_IDX = 4  # Position of closing price
 
     def __init__(self, chart_data=None):
         self.chart_data = chart_data

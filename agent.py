@@ -5,46 +5,46 @@ class Agent:
     # The number of values that agent status configures
     STATE_DIM = 2  # stock holding ratio, portfolio value ratio
 
-    # 행동
-    ACTION_BUY = 0  # 매수
-    ACTION_SELL = 1  # 매도
-    ACTION_HOLD = 2  # 홀딩
-    ACTIONS = [ACTION_BUY, ACTION_SELL]  # 인공 신경망에서 확률을 구할 행동들, (홀딩?)
-    NUM_ACTIONS = len(ACTIONS)  # 인공 신경망에서 고려할 출력값의 개수
+    # Action
+    ACTION_BUY = 0  # Buying
+    ACTION_SELL = 1  # Selling
+    ACTION_HOLD = 2  # Holding
+    ACTIONS = [ACTION_BUY, ACTION_SELL]  # Actions to find probabilities in artificial neural networks (holding?)
+    NUM_ACTIONS = len(ACTIONS)  # Number of outputs to consider in artificial neural network
 
     def __init__(
         self, environment, min_trading_unit=1, max_trading_unit=2, 
         delayed_reward_threshold=.05,tax=False):
-        # Environment 객체
-        self.environment = environment  # 현재 주식 가격을 가져오기 위해 환경 참조
+        # Environment object
+        self.environment = environment  # Referring environment to get current stock price
 
-        # 최소 매매 단위, 최대 매매 단위, 지연보상 임계치
-        self.min_trading_unit = min_trading_unit  # 최소 단일 거래 단위
-        self.max_trading_unit = max_trading_unit  # 최대 단일 거래 단위
-        self.delayed_reward_threshold = delayed_reward_threshold  # 지연보상 임계치
+        # Minimum trading unit, maximum trading unit, delay reward threshold
+        self.min_trading_unit = min_trading_unit  # Minimum trading unit
+        self.max_trading_unit = max_trading_unit  # Maximum trading unit
+        self.delayed_reward_threshold = delayed_reward_threshold  # Delay reward threshold
 
-        # Agent 클래스의 속성
-        self.initial_balance = 0  # 초기 자본금
-        self.balance = 0  # 현재 현금 잔고
-        self.num_stocks = 0  # 보유 주식 수
-        self.portfolio_value = 0  # balance + num_stocks * {현재 주식 가격}
-        self.base_portfolio_value = 0  # 직전 학습 시점의 PV
-        self.num_buy = 0  # 매수 횟수
-        self.num_sell = 0  # 매도 횟수
-        self.num_hold = 0  # 홀딩 횟수
-        self.immediate_reward = 0  # 즉시 보상
+        # Properties of the agent class
+        self.initial_balance = 0  # initial balance
+        self.balance = 0  # Current cash balance
+        self.num_stocks = 0  # Current number of holding stocks
+        self.portfolio_value = 0  # balance + num_stocks * {Current stock price}
+        self.base_portfolio_value = 0  # PV at the last learning point
+        self.num_buy = 0  # Number of buying
+        self.num_sell = 0  # Number of selling
+        self.num_hold = 0  # Number of holding
+        self.immediate_reward = 0  # Immediate reward
 
-        # Agent 클래스의 상태
-        self.ratio_hold = 0  # 주식 보유 비율
-        self.ratio_portfolio_value = 0  # 포트폴리오 가치 비율
+        # State of the agent class
+        self.ratio_hold = 0  # Stock holding ratio
+        self.ratio_portfolio_value = 0  # Portfolio Value Ratio
 
         if not tax:
-            self.TRADING_CHARGE = 0  # 거래 수수료 미고려 (일반적으로 0.015%)
-            self.TRADING_TAX = 0  # 거래세 미고려 (실제 0.3%)
+            self.TRADING_CHARGE = 0  # Not considering trading charge (generally 0.015%)
+            self.TRADING_TAX = 0  # Not considering trading tax (actual 0.3%)
         else:
-            # 매매 수수료 및 세금
-            self.TRADING_CHARGE = 0.00015  # 거래 수수료 미고려 (일반적으로 0.015%)
-            self.TRADING_TAX = 0.003  # 거래세 미고려 (실제 0.3%)
+            # Trading charge and trading tax
+            self.TRADING_CHARGE = 0.00015  # Not considering trading charge (generally 0.015%)
+            self.TRADING_TAX = 0.003  # Not considering trading tax (actual 0.3%)
 
 
 
@@ -74,13 +74,13 @@ class Agent:
 
     def decide_action(self, policy_network, sample, epsilon):
         confidence = 0.
-        # 탐험 결정
+        # Exploration decision
         if np.random.rand() < epsilon:
             exploration = True
-            action = np.random.randint(self.NUM_ACTIONS)  # 무작위로 행동 결정
+            action = np.random.randint(self.NUM_ACTIONS)  # Randomly decide the action
         else:
             exploration = False
-            probs = policy_network.predict(sample)  # 각 행동에 대한 확률
+            probs = policy_network.predict(sample)  # Probability for each action
             action = np.argmax(probs)
             confidence = probs[action]
         return action, confidence, exploration
@@ -88,12 +88,12 @@ class Agent:
     def validate_action(self, action):
         validity = True
         if action == Agent.ACTION_BUY:
-            # 적어도 1주를 살 수 있는지 확인
+            # Check if you can buy at least one stock
             if self.balance < self.environment.get_price() * (
                 1 + self.TRADING_CHARGE) * self.min_trading_unit:
                 validity = False
         elif action == Agent.ACTION_SELL:
-            # 주식 잔고가 있는지 확인 
+            # Check if you have stock balance
             if self.num_stocks <= 0:
                 validity = False
         return validity
@@ -111,63 +111,63 @@ class Agent:
         if not self.validate_action(action):
             action = Agent.ACTION_HOLD
 
-        # 환경에서 현재 가격 얻기
+        # Get current price in environment
         curr_price = self.environment.get_price()
 
-        # 즉시 보상 초기화
+        # Initiate the immediate reward
         self.immediate_reward = 0
 
-        # 매수
+        # Buying
         if action == Agent.ACTION_BUY:
-            # 매수할 단위를 판단
+            # Determine the unit to buy
             trading_unit = self.decide_trading_unit(confidence)
             balance = self.balance - curr_price * (1 + self.TRADING_CHARGE) * trading_unit
-            # 보유 현금이 모자랄 경우 보유 현금으로 가능한 만큼 최대한 매수
+            # If you do not have enough cash, buy as much as you can with the cash you have.
             if balance < 0:
                 trading_unit = max(min(
                     int(self.balance / (
                         curr_price * (1 + self.TRADING_CHARGE))), self.max_trading_unit),
                     self.min_trading_unit
                 )
-            # 수수료를 적용하여 총 매수 금액 산정
+            # Calculate total purchase amount by applying fee
             invest_amount = curr_price * (1 + self.TRADING_CHARGE) * trading_unit
-            self.balance -= invest_amount  # 보유 현금을 갱신
-            self.num_stocks += trading_unit  # 보유 주식 수를 갱신
-            self.num_buy += 1  # 매수 횟수 증가
+            self.balance -= invest_amount  # Update the holding cash
+            self.num_stocks += trading_unit  # Update the number of holding stock
+            self.num_buy += 1  # Increase the number of buying
 
-        # 매도
+        # Selling
         elif action == Agent.ACTION_SELL:
-            # 매도할 단위를 판단
+            # Determine the unit to sell
             trading_unit = self.decide_trading_unit(confidence)
-            # 보유 주식이 모자랄 경우 가능한 만큼 최대한 매도
+            # If you do not have enough stock, then sell as much as you can
             trading_unit = min(trading_unit, self.num_stocks)
-            # 매도
+            # Selling
             invest_amount = curr_price * (
                 1 - (self.TRADING_TAX + self.TRADING_CHARGE)) * trading_unit
-            self.num_stocks -= trading_unit  # 보유 주식 수를 갱신
-            self.balance += invest_amount  # 보유 현금을 갱신
-            self.num_sell += 1  # 매도 횟수 증가
+            self.num_stocks -= trading_unit  # Update the number of holding stock
+            self.balance += invest_amount  # Update the holding cash
+            self.num_sell += 1  # Increase the number of selling
 
-        # 홀딩
+        # Holding
         elif action == Agent.ACTION_HOLD:
-            self.num_hold += 1  # 홀딩 횟수 증가
+            self.num_hold += 1  # Increase the holding number
 
-        # 포트폴리오 가치 갱신
+        # Update the portfolio value
         self.portfolio_value = self.balance + curr_price * self.num_stocks
         profitloss = (
             (self.portfolio_value - self.base_portfolio_value) / self.base_portfolio_value)
 
-        # 즉시 보상 판단
+        # Determine the immediate reward
         self.immediate_reward = 1 if profitloss >= 0 else -1
 
-        # 지연 보상 판단
+        # Determine the delayed reward
         if profitloss > self.delayed_reward_threshold:
             delayed_reward = 1
-            # 목표 수익률 달성하여 기준 포트폴리오 가치 갱신
+            # Update base portfolio value by achieving target benefit
             self.base_portfolio_value = self.portfolio_value
         elif profitloss < -self.delayed_reward_threshold:
             delayed_reward = -1
-            # 손실 기준치를 초과하여 기준 포트폴리오 가치 갱신
+            # Update base portfolio value by exceeding the loss trheshold
             self.base_portfolio_value = self.portfolio_value
         else:
             delayed_reward = 0

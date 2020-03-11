@@ -9,7 +9,7 @@ class PolicyNetwork:
         self.input_dim = input_dim
         self.lr = lr
 
-        # LSTM 신경망
+        # LSTM Neural Network
         self.model = Sequential() 
 
         self.model.add(LSTM(256, input_shape=(1, input_dim),

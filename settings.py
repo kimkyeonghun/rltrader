@@ -67,7 +67,7 @@ FORMAT_DATE = "%Y%m%d"
 FORMAT_DATETIME = "%Y%m%d%H%M%S"
 
 
-# 로케일 설정
+# Locale setting
 if 'Darwin' in platform.system():
     locale.setlocale(locale.LC_ALL, 'ko_KR.UTF-8')
 elif 'Windows' in platform.system():
