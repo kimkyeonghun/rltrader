@@ -17,24 +17,24 @@ class PolicyLearner:
     def __init__(self, stock_code, chart_data, training_data=None,
                  min_trading_unit=1, max_trading_unit=2,
                  delayed_reward_threshold=.05, lr=0.01,tax=False):
-        self.stock_code = stock_code  # 종목코드
+        self.stock_code = stock_code  # Stock code
         self.chart_data = chart_data
-        self.environment = Environment(chart_data)  # 환경 객체
+        self.environment = Environment(chart_data)  # Environment object
         self.tax = tax
-        # 에이전트 객체
+        # Agent object
         self.agent = Agent(self.environment,
                            min_trading_unit=min_trading_unit,
                            max_trading_unit=max_trading_unit,
                            delayed_reward_threshold=delayed_reward_threshold,
                            tax=tax)
-        self.training_data = training_data  # 학습 데이터
+        self.training_data = training_data  # Training data
         self.sample = None
         self.training_data_idx = -1
-        # 정책 신경망; 입력 크기 = 학습 데이터의 크기 + 에이전트 상태 크기
+        # Policy neural network; Input size = size of training data + agent state size
         self.num_features = self.training_data.shape[1] + self.agent.STATE_DIM
         self.policy_network = PolicyNetwork(
             input_dim=self.num_features, output_dim=self.agent.NUM_ACTIONS, lr=lr)
-        self.visualizer = Visualizer()  # 가시화 모듈
+        self.visualizer = Visualizer()  # Visualization module
 
     def reset(self):
         self.sample = None
@@ -54,27 +54,27 @@ class PolicyLearner:
             tax = self.tax
         ))
 
-        # 가시화 준비
-        # 차트 데이터는 변하지 않으므로 미리 가시화
+        # Visualization Preparation
+        # Pre-visualization the chart data as it does not change
         self.visualizer.prepare(self.environment.chart_data)
 
-        # 가시화 결과 저장할 폴더 준비
+        # Prepare the folders to store visualization results
         epoch_summary_dir = os.path.join(
             settings.BASE_DIR, 'epoch_summary/%s/epoch_summary_%s' % (
                 self.stock_code, settings.timestr))
         if not os.path.isdir(epoch_summary_dir):
             os.makedirs(epoch_summary_dir)
 
-        # 에이전트 초기 자본금 설정
+        # Set agent's initial balance
         self.agent.set_balance(balance)
 
-        # 학습에 대한 정보 초기화
+        # Initialize the information about training
         max_portfolio_value = 0
         epoch_win_cnt = 0
 
-        # 학습 반복
+        # Training repetition
         for epoch in range(num_epoches):    
-            # 에포크 관련 정보 초기화
+            # Initialize the information about epoch
             loss = 0.
             itr_cnt = 0
             win_cnt = 0
@@ -83,7 +83,7 @@ class PolicyLearner:
             pos_learning_cnt = 0
             neg_learning_cnt = 0
 
-            # 메모리 초기화
+            # Initialize the memory
             memory_sample = []
             memory_action = []
             memory_reward = []
@@ -93,35 +93,35 @@ class PolicyLearner:
             memory_exp_idx = []
             memory_learning_idx = []
             
-            # 환경, 에이전트, 정책 신경망 초기화
+            # Initialize the environment, agent and policy nerual network
             self.environment.reset()
             self.agent.reset()
             self.policy_network.reset()
             self.reset()
 
-            # 가시화 초기화
+            # Initialize the visualizer
             self.visualizer.clear([0, len(self.chart_data)])
 
-            # 학습을 진행할 수록 탐험 비율 감소
+            # Exploration rate decreases as you progress
             if learning:
                 epsilon = start_epsilon * (1. - float(epoch) / (num_epoches - 1))
             else:
                 epsilon = 0
 
             while True:
-                # 샘플 생성
+                # Sample generation
                 next_sample = self._build_sample()
                 if next_sample is None:
                     break
 
-                # 정책 신경망 또는 탐험에 의한 행동 결정
+                # Actions decided by policy neural network or exploration
                 action, confidence, exploration = self.agent.decide_action(
                     self.policy_network, self.sample, epsilon)
 
-                # 결정한 행동을 수행하고 즉시 보상과 지연 보상 획득
+                # Perform the action you decided and earn immediate and delayed rewards
                 immediate_reward, delayed_reward = self.agent.act(action, confidence)
 
-                # 행동 및 행동에 대한 결과를 기억
+                # Store the actions and the consequences for the actions
                 memory_sample.append(next_sample)
                 memory_action.append(action)
                 memory_reward.append(immediate_reward)
@@ -139,20 +139,20 @@ class PolicyLearner:
                 else:
                     memory_prob.append(self.policy_network.prob)
 
-                # 반복에 대한 정보 갱신
+                # Update the information about iterations
                 batch_size += 1
                 itr_cnt += 1
                 exploration_cnt += 1 if exploration else 0
                 win_cnt += 1 if delayed_reward > 0 else 0
 
-                # 학습 모드이고 지연 보상이 존재할 경우 정책 신경망 갱신
+                # Update policy neural network when in training mode and delay rewards exist
                 if delayed_reward == 0 and batch_size >= max_memory:
                     delayed_reward = immediate_reward
                     self.agent.base_portfolio_value = self.agent.portfolio_value
                 if learning and delayed_reward != 0:
-                    # 배치 학습 데이터 크기
+                    # Size of batch traning data
                     batch_size = min(batch_size, max_memory)
-                    # 배치 학습 데이터 생성
+                    # Generate batch training data
                     x, y = self._get_batch(
                         memory, batch_size, discount_factor, delayed_reward)
                     if len(x) > 0:
@@ -160,12 +160,12 @@ class PolicyLearner:
                             pos_learning_cnt += 1
                         else:
                             neg_learning_cnt += 1
-                        # 정책 신경망 갱신
+                        # Update Pplicy neural network
                         loss += self.policy_network.train_on_batch(x, y)
                         memory_learning_idx.append([itr_cnt, delayed_reward])
                     batch_size = 0
 
-            # 에포크 관련 정보 가시화
+            # Visualize the information about epoches
             num_epoches_digit = len(str(num_epoches))
             epoch_str = str(epoch + 1).rjust(num_epoches_digit, '0')
 
@@ -180,7 +180,7 @@ class PolicyLearner:
                 epoch_summary_dir, 'epoch_summary_%s_%s.png' % (
                     settings.timestr, epoch_str)))
 
-            # 에포크 관련 정보 로그 기록
+            # Record the information about epoches in log
             if pos_learning_cnt + neg_learning_cnt > 0:
                 loss /= pos_learning_cnt + neg_learning_cnt
             logging.info("[Epoch %s/%s]\tEpsilon:%.4f\t#Expl.:%d/%d\t"
@@ -193,13 +193,13 @@ class PolicyLearner:
                             locale.currency(self.agent.portfolio_value, grouping=True),
                             pos_learning_cnt, neg_learning_cnt, loss))
 
-            # 학습 관련 정보 갱신
+            # Update the information about training
             max_portfolio_value = max(
                 max_portfolio_value, self.agent.portfolio_value)
             if self.agent.portfolio_value > self.agent.initial_balance:
                 epoch_win_cnt += 1
 
-        # 학습 관련 정보 로그 기록
+        # Record the information about training in log
         logging.info("Max PV: %s, \t # Win: %d" % (
             locale.currency(max_portfolio_value, grouping=True), epoch_win_cnt))
 
