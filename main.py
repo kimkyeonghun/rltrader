@@ -53,23 +53,23 @@ if __name__ == '__main__':
         handlers=[file_handler, stream_handler], level=logging.DEBUG)
 
 
-    # 주식 데이터 준비
+    # Prepare the stock data
     chart_data = data_manager.load_chart_data(
         os.path.join(settings.BASE_DIR,
                      'data/chart_data/{}.csv'.format(stock_code)))
     prep_data = data_manager.preprocess(chart_data)
     training_data = data_manager.build_training_data(prep_data)
 
-    # 기간 필터링
+    # Date range filtering
     training_data = training_data[(training_data['date'] >= '2019-01-01') &
                                   (training_data['date'] <= '2019-12-31')]
     training_data = training_data.dropna()
 
-    # 차트 데이터 분리
+    # Chart Data Separation
     features_chart_data = ['date', 'open', 'high', 'low', 'close', 'volume']
     chart_data = training_data[features_chart_data]
 
-    # 학습 데이터 분리
+    # Training data separation
     features_training_data = [
         'open_lastclose_ratio', 'high_close_ratio', 'low_close_ratio',
         'close_lastclose_ratio', 'volume_lastvolume_ratio',
@@ -81,14 +81,14 @@ if __name__ == '__main__':
     ]
     training_data = training_data[features_training_data]
 
-    # 강화학습 시작
+    # Strat reinforcement learning
     policy_learner = PolicyLearner(
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
         min_trading_unit=1, max_trading_unit=2, delayed_reward_threshold=reward, lr=.001,tax=tax)
     policy_learner.fit(balance=bal, num_epoches=1000,
                        discount_factor=0, start_epsilon=.5)
 
-    # 정책 신경망을 파일로 저장
+    # Save Policy Neural Network to File
     model_dir = os.path.join(settings.BASE_DIR, 'models/%s' % stock_code)
     if not os.path.isdir(model_dir):
         os.makedirs(model_dir)
