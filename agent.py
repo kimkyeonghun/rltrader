@@ -23,28 +23,28 @@ class Agent:
         self.max_trading_unit = max_trading_unit  # Maximum trading unit
         self.delayed_reward_threshold = delayed_reward_threshold  # Delay reward threshold
 
-        # Agent 클래스의 속성
-        self.initial_balance = 0  # 초기 자본금
-        self.balance = 0  # 현재 현금 잔고
-        self.num_stocks = 0  # 보유 주식 수
-        self.portfolio_value = 0  # balance + num_stocks * {현재 주식 가격}
-        self.base_portfolio_value = 0  # 직전 학습 시점의 PV
-        self.num_buy = 0  # 매수 횟수
-        self.num_sell = 0  # 매도 횟수
-        self.num_hold = 0  # 홀딩 횟수
-        self.immediate_reward = 0  # 즉시 보상
+        # Properties of the agent class
+        self.initial_balance = 0  # initial balance
+        self.balance = 0  # Current cash balance
+        self.num_stocks = 0  # Current number of holding stocks
+        self.portfolio_value = 0  # balance + num_stocks * {Current stock price}
+        self.base_portfolio_value = 0  # PV at the last learning point
+        self.num_buy = 0  # Number of buying
+        self.num_sell = 0  # Number of selling
+        self.num_hold = 0  # Number of holding
+        self.immediate_reward = 0  # Immediate reward
 
-        # Agent 클래스의 상태
-        self.ratio_hold = 0  # 주식 보유 비율
-        self.ratio_portfolio_value = 0  # 포트폴리오 가치 비율
+        # State of the agent class
+        self.ratio_hold = 0  # Stock holding ratio
+        self.ratio_portfolio_value = 0  # Portfolio Value Ratio
 
         if not tax:
-            self.TRADING_CHARGE = 0  # 거래 수수료 미고려 (일반적으로 0.015%)
-            self.TRADING_TAX = 0  # 거래세 미고려 (실제 0.3%)
+            self.TRADING_CHARGE = 0  # Not considering trading charge (generally 0.015%)
+            self.TRADING_TAX = 0  # Not considering trading tax (actual 0.3%)
         else:
-            # 매매 수수료 및 세금
-            self.TRADING_CHARGE = 0.00015  # 거래 수수료 미고려 (일반적으로 0.015%)
-            self.TRADING_TAX = 0.003  # 거래세 미고려 (실제 0.3%)
+            # Trading charge and trading tax
+            self.TRADING_CHARGE = 0.00015  # Not considering trading charge (generally 0.015%)
+            self.TRADING_TAX = 0.003  # Not considering trading tax (actual 0.3%)
 
 
 
