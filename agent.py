@@ -74,13 +74,13 @@ class Agent:
 
     def decide_action(self, policy_network, sample, epsilon):
         confidence = 0.
-        # 탐험 결정
+        # Exploration decision
         if np.random.rand() < epsilon:
             exploration = True
-            action = np.random.randint(self.NUM_ACTIONS)  # 무작위로 행동 결정
+            action = np.random.randint(self.NUM_ACTIONS)  # Randomly decide the action
         else:
             exploration = False
-            probs = policy_network.predict(sample)  # 각 행동에 대한 확률
+            probs = policy_network.predict(sample)  # Probability for each action
             action = np.argmax(probs)
             confidence = probs[action]
         return action, confidence, exploration
@@ -88,12 +88,12 @@ class Agent:
     def validate_action(self, action):
         validity = True
         if action == Agent.ACTION_BUY:
-            # 적어도 1주를 살 수 있는지 확인
+            # Check if you can buy at least one stock
             if self.balance < self.environment.get_price() * (
                 1 + self.TRADING_CHARGE) * self.min_trading_unit:
                 validity = False
         elif action == Agent.ACTION_SELL:
-            # 주식 잔고가 있는지 확인 
+            # Check if you have stock balance
             if self.num_stocks <= 0:
                 validity = False
         return validity
@@ -111,29 +111,29 @@ class Agent:
         if not self.validate_action(action):
             action = Agent.ACTION_HOLD
 
-        # 환경에서 현재 가격 얻기
+        # Get current price in environment
         curr_price = self.environment.get_price()
 
-        # 즉시 보상 초기화
+        # Initiate the immediate reward
         self.immediate_reward = 0
 
-        # 매수
+        # Buying
         if action == Agent.ACTION_BUY:
-            # 매수할 단위를 판단
+            # Determine the unit to buy
             trading_unit = self.decide_trading_unit(confidence)
             balance = self.balance - curr_price * (1 + self.TRADING_CHARGE) * trading_unit
-            # 보유 현금이 모자랄 경우 보유 현금으로 가능한 만큼 최대한 매수
+            # If you do not have enough cash, buy as much as you can with the cash you have.
             if balance < 0:
                 trading_unit = max(min(
                     int(self.balance / (
                         curr_price * (1 + self.TRADING_CHARGE))), self.max_trading_unit),
                     self.min_trading_unit
                 )
-            # 수수료를 적용하여 총 매수 금액 산정
+            # Calculate total purchase amount by applying fee
             invest_amount = curr_price * (1 + self.TRADING_CHARGE) * trading_unit
-            self.balance -= invest_amount  # 보유 현금을 갱신
-            self.num_stocks += trading_unit  # 보유 주식 수를 갱신
-            self.num_buy += 1  # 매수 횟수 증가
+            self.balance -= invest_amount  # Update the holding cash
+            self.num_stocks += trading_unit  # Update the number of holding stock
+            self.num_buy += 1  # Increase the number of buying
 
         # 매도
         elif action == Agent.ACTION_SELL:
