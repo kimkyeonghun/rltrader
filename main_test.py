@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     model_ver = chooseModelver(stock_code)[6:-3]
 
-    # 로그 기록
+    # Log record
     log_dir = os.path.join(settings.BASE_DIR, 'logs/%s' % stock_code)
     timestr = settings.get_time_str()
     file_handler = logging.FileHandler(filename=os.path.join(
@@ -49,23 +49,23 @@ if __name__ == '__main__':
     logging.basicConfig(format="%(message)s",
         handlers=[file_handler, stream_handler], level=logging.DEBUG)
 
-    # 주식 데이터 준비
+    # Prepare stock data
     chart_data = data_manager.load_chart_data(
         os.path.join(settings.BASE_DIR,
                      'data/chart_data/{}.csv'.format(stock_code)))
     prep_data = data_manager.preprocess(chart_data)
     training_data = data_manager.build_training_data(prep_data)
 
-    # 기간 필터링
+    # Date range filtering
     training_data = training_data[(training_data['date'] >= '2020-01-01') &
                                   (training_data['date'] <= '2020-02-28')]
     training_data = training_data.dropna()
 
-    # 차트 데이터 분리
+    # Chart Data Separation
     features_chart_data = ['date', 'open', 'high', 'low', 'close', 'volume']
     chart_data = training_data[features_chart_data]
 
-    # 학습 데이터 분리
+    # Training data separation
     features_training_data = [
         'open_lastclose_ratio', 'high_close_ratio', 'low_close_ratio',
         'close_lastclose_ratio', 'volume_lastvolume_ratio',
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     ]
     training_data = training_data[features_training_data]
 
-    # 비 학습 투자 시뮬레이션 시작
+    # Start non-training investment simulation
     policy_learner = PolicyLearner(
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
         min_trading_unit=1, max_trading_unit=3,delayed_reward_threshold=reward,tax=tax)
