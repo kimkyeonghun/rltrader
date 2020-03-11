@@ -135,39 +135,39 @@ class Agent:
             self.num_stocks += trading_unit  # Update the number of holding stock
             self.num_buy += 1  # Increase the number of buying
 
-        # 매도
+        # Selling
         elif action == Agent.ACTION_SELL:
-            # 매도할 단위를 판단
+            # Determine the unit to sell
             trading_unit = self.decide_trading_unit(confidence)
-            # 보유 주식이 모자랄 경우 가능한 만큼 최대한 매도
+            # If you do not have enough stock, then sell as much as you can
             trading_unit = min(trading_unit, self.num_stocks)
-            # 매도
+            # Selling
             invest_amount = curr_price * (
                 1 - (self.TRADING_TAX + self.TRADING_CHARGE)) * trading_unit
-            self.num_stocks -= trading_unit  # 보유 주식 수를 갱신
-            self.balance += invest_amount  # 보유 현금을 갱신
-            self.num_sell += 1  # 매도 횟수 증가
+            self.num_stocks -= trading_unit  # Update the number of holding stock
+            self.balance += invest_amount  # Update the holding cash
+            self.num_sell += 1  # Increase the number of selling
 
-        # 홀딩
+        # Holding
         elif action == Agent.ACTION_HOLD:
-            self.num_hold += 1  # 홀딩 횟수 증가
+            self.num_hold += 1  # Increase the holding number
 
-        # 포트폴리오 가치 갱신
+        # Update the portfolio value
         self.portfolio_value = self.balance + curr_price * self.num_stocks
         profitloss = (
             (self.portfolio_value - self.base_portfolio_value) / self.base_portfolio_value)
 
-        # 즉시 보상 판단
+        # Determine the immediate reward
         self.immediate_reward = 1 if profitloss >= 0 else -1
 
-        # 지연 보상 판단
+        # Determine the delayed reward
         if profitloss > self.delayed_reward_threshold:
             delayed_reward = 1
-            # 목표 수익률 달성하여 기준 포트폴리오 가치 갱신
+            # Update base portfolio value by achieving target benefit
             self.base_portfolio_value = self.portfolio_value
         elif profitloss < -self.delayed_reward_threshold:
             delayed_reward = -1
-            # 손실 기준치를 초과하여 기준 포트폴리오 가치 갱신
+            # Update base portfolio value by exceeding the loss trheshold
             self.base_portfolio_value = self.portfolio_value
         else:
             delayed_reward = 0
