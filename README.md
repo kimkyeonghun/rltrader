@@ -1,6 +1,19 @@
 # 파이썬과 케라스를 이용한 강화학습 주식투자
 
-## Action, State, Reward?
+## RL을 사용한 주식투자 구조
+
+- Agent : 투자자
+- Environment : (한 종목의) 차트 데이터
+  - 2차원 데이터로 체결일(date), 시가(open), 고가(high), 저가(low), 종가(close), 거래량(volume)이 연속되는 식으로 구성된 데이터
+- State
+  - 주식 보유 비율 (현재 보유 주식 수 / 최대 보유 가능 주식 수)
+  - 포트폴리오 가치 비율 (현재 포트폴리오 가치 / 기준 포트폴리오 가치)
+- Action : 매수, 매도, 관망
+- Reward : 손익
+
+## RLTrader 구조
+
+![rltrader](./img/rltrader.png)
 
 ## Environment Setting
 

@@ -19,10 +19,11 @@ class DataLoader:
         m = p.findall(df.date.iloc[-1])
         lastday = m[0]+m[1]+str(int(m[2])+1)
         yesterday = str(int(datetime.today().strftime("%Y%m%d"))-1)
-        if lastday != yesterday:
+        if m[0]+m[1]+m[2] != datetime.today().strftime("%Y%m%d"):
             df2 = stock.get_market_ohlcv_by_date(lastday, yesterday, self.stock_code)
             df2 = df2.reset_index()
             df2.rename(columns={"날짜":"date","시가":"open","고가":"high","저가":"low","종가":"close","거래량":"volume"},inplace=True)
             df_new = pd.concat([df,df2],ignore_index=True)
             df_new.to_csv('./data/chart_data/{}.csv'.format(self.stock_code),sep=',',index=False,header=False)
             print("\n\n{}.csv File Update Complete!".format(self.stock_code))
+        
