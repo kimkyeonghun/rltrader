@@ -5,23 +5,23 @@ class Agent:
     # The number of values that agent status configures
     STATE_DIM = 2  # stock holding ratio, portfolio value ratio
 
-    # 행동
-    ACTION_BUY = 0  # 매수
-    ACTION_SELL = 1  # 매도
-    ACTION_HOLD = 2  # 홀딩
-    ACTIONS = [ACTION_BUY, ACTION_SELL]  # 인공 신경망에서 확률을 구할 행동들, (홀딩?)
-    NUM_ACTIONS = len(ACTIONS)  # 인공 신경망에서 고려할 출력값의 개수
+    # Action
+    ACTION_BUY = 0  # Buying
+    ACTION_SELL = 1  # Selling
+    ACTION_HOLD = 2  # Holding
+    ACTIONS = [ACTION_BUY, ACTION_SELL]  # Actions to find probabilities in artificial neural networks (holding?)
+    NUM_ACTIONS = len(ACTIONS)  # Number of outputs to consider in artificial neural network
 
     def __init__(
         self, environment, min_trading_unit=1, max_trading_unit=2, 
         delayed_reward_threshold=.05,tax=False):
-        # Environment 객체
-        self.environment = environment  # 현재 주식 가격을 가져오기 위해 환경 참조
+        # Environment object
+        self.environment = environment  # Referring environment to get current stock price
 
-        # 최소 매매 단위, 최대 매매 단위, 지연보상 임계치
-        self.min_trading_unit = min_trading_unit  # 최소 단일 거래 단위
-        self.max_trading_unit = max_trading_unit  # 최대 단일 거래 단위
-        self.delayed_reward_threshold = delayed_reward_threshold  # 지연보상 임계치
+        # Minimum trading unit, maximum trading unit, delay reward threshold
+        self.min_trading_unit = min_trading_unit  # Minimum trading unit
+        self.max_trading_unit = max_trading_unit  # Maximum trading unit
+        self.delayed_reward_threshold = delayed_reward_threshold  # Delay reward threshold
 
         # Agent 클래스의 속성
         self.initial_balance = 0  # 초기 자본금
