@@ -45,7 +45,7 @@
 `python main.py --code <stock_code> --tax <y or n> --bal <balance> --reward <delayed_reward_threshold>`
 
 - --code : 원하는 기업의 stock_code을 넣는다. 만약 해당 stock_code의 csv 파일을 가지고 있지 않으면 파일을 생성하며 가지고 있다면 어제 날짜까지 최신화하여 rewrite합니다. 
-  - defaul = kospi
+  - default = kospi
 
 - --tax : 매매시 발생하는 거래세와 수수료를 고려하는지에 대한 여부를 나타냅니다.
   - default = n
