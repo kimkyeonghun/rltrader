@@ -17,7 +17,26 @@
 
 ## Environment Setting
 
+- Ubuntu 16.04.6
+- Anaconda 4.5.4
 
+`conda create -n <virtual_environment_name> tensorflow-gpu=1.15`
+
+- Anaconda를 사용하여 원하는 가상환경을 만듭니다.
+- 이 명령어를 치면 필요한 환경들은 스스로 설치됩니다.
+- tensorflow의 버전은 1.15로 했습니다.
+
+`source activate <virtual_environment_name>`
+
+- 가상환경을 활성화시킵니다.
+
+`source deactivate
+
+- 가상환경을 비활성화시킵니다.
+
+`sudo code --user-data-dir`
+
+- 코드를 실행할 수 있기 위해 super user 로 Visual Studio Code를 실행합니다.
 
 ## Train
 
