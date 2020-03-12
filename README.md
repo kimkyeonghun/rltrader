@@ -20,6 +20,8 @@
 - Ubuntu 16.04.6
 - Anaconda 4.5.4
 
+- https://nagy.tistory.com/26 아나콘다 설치 참조
+
 `conda create -n <virtual_environment_name> tensorflow-gpu=1.15`
 
 - Anaconda를 사용하여 원하는 가상환경을 만듭니다.
