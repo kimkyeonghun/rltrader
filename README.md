@@ -30,7 +30,7 @@
 
 - 가상환경을 활성화시킵니다.
 
-`source deactivate
+`source deactivate`
 
 - 가상환경을 비활성화시킵니다.
 
