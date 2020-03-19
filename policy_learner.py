@@ -160,11 +160,10 @@ class PolicyLearner:
                             pos_learning_cnt += 1
                         else:
                             neg_learning_cnt += 1
-                        # Update Pplicy neural network
+                        # Update Policy neural network
                         loss += self.policy_network.train_on_batch(x, y)
                         memory_learning_idx.append([itr_cnt, delayed_reward])
                     batch_size = 0
-
             # Visualize the information about epoches
             num_epoches_digit = len(str(num_epoches))
             epoch_str = str(epoch + 1).rjust(num_epoches_digit, '0')

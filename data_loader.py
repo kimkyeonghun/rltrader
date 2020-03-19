@@ -17,7 +17,10 @@ class DataLoader:
     #update csv when you  have stock_code.csv
     def updateFile(self):
         df = pd.read_csv("data/chart_data/"+self.stock_code+".csv",names=["date","open","high","low","close","volume"],header=None)
-        dt = datetime.strptime(df.date.iloc[-1],'%Y-%m-%d %H:%M:%S')
+        try:
+            dt = datetime.strptime(df.date.iloc[-1],'%Y-%m-%d %H:%M:%S')
+        except:
+            dt = datetime.strptime(df.date.iloc[-1],'%Y-%m-%d')
         Ndt = dt + timedelta(days=1)
         lastday = Ndt.strftime("%Y%m%d")
         today = datetime.today().strftime("%Y%m%d")
