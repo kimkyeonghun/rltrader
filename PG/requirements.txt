@@ -1,0 +1,7 @@
+pandas
+numpy
+matplotlib
+tensorflow
+keras
+mpl_finance
+pykrx
