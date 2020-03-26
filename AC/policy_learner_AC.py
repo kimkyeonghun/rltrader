@@ -5,7 +5,7 @@ import numpy as np
 import settings
 from environment import Environment
 from agent import Agent
-from AC import ACagent
+from AC_LSTM import ACagent
 from visualizer import Visualizer
 
 
@@ -17,7 +17,7 @@ class PolicyLearner:
     def __init__(self, stock_code, chart_data, training_data=None,
                  min_trading_unit=1, max_trading_unit=2,
                  delayed_reward_threshold=.05, lr=0.01,tax=False):
-        self.stock_code = stock_code  # Stock code
+        self.stock_code = stock_code  # Stock coder
         self.chart_data = chart_data
         self.environment = Environment(chart_data)  # Environment object
         self.tax = tax
