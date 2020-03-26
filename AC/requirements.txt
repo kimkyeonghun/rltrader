@@ -5,3 +5,4 @@ tensorflow
 keras
 mpl_finance
 pykrx
+h5py

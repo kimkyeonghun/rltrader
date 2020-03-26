@@ -5,7 +5,6 @@ from keras.layers import Activation, LSTM, Dense, BatchNormalization, Flatten, D
 from keras.optimizers import sgd, Adam
 from keras import backend as K
 
-GAMMA = 0.98
 K.set_learning_phase(1) 
 
 class ACagent:
@@ -95,7 +94,6 @@ class ACagent:
     def train_model(self,state,action,reward,next_state):
         value = self.critic.predict(np.array(state).reshape(1,self.input_dim))[0]
         next_value = self.critic.predict(np.array(next_state).reshape(1,self.input_dim))[0]
-
 
         act = np.zeros([1,self.action_size])
         act[0][action] = 1

@@ -19,14 +19,15 @@
 
 - Ubuntu 16.04.6
 - Anaconda 4.5.4
-
+- Python 3.5
+- Keras 2.0.8
 - https://nagy.tistory.com/26 아나콘다 설치 참조
 
 `conda create -n <virtual_environment_name> tensorflow-gpu=1.15`
 
 - Anaconda를 사용하여 원하는 가상환경을 만듭니다.
 - 이 명령어를 치면 필요한 환경들은 스스로 설치됩니다.
-- tensorflow의 버전은 1.15로 했습니다.
+- tensorflow의 버전은 1.14로 했습니다.
 
 `source activate <virtual_environment_name>`
 
@@ -55,7 +56,7 @@
 - --reward : 지연보상의 임계치를 설정하는 option입니다.
   - default = .02(2%)
 
-학습하는 기간은 2018-01-01~2018-12-31이며 main.py의 60~61번 줄을 수정하여 바꿀 수 있습니다.
+학습하는 기간은 2019-01-01~2019-12-31이며 main.py의 60~61번 줄을 수정하여 바꿀 수 있습니다.
 
 ![train](./img/train.png)
 
@@ -99,3 +100,13 @@ Train과 같은 옵션을 가지고 있으며 해당 stock_code로 여러 model�
   - 배경색(세로줄) : 긍정 보상(빨간색), 부정 보상(파란색)
   - 배경색(기준선 사이) : 수익(빨간색), 손실(파란색)
   - PV 값이 기준선(초기 투자금) 위면 빨간색, 기준선 아래면 파란색으로 사이 공간을 채워서 손익을 더 쉽게 파악
+
+
+
+## Policy Network의 Layer (LSTM, Dense)
+
+- 현재까지 한 Policy Network는 LSTM Layer을 이용하여 구성된 모델
+- Dense Layer로 구성하여 Policy를 학습해나가려면
+  - "policy_learner.py" 파일의 import 부분에서
+    "from policy_network_dnn import PolicyNetwork"로 변경 후 실행
+

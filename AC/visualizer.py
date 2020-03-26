@@ -89,7 +89,7 @@ class Visualizer:
             ax.autoscale()  # Reset scale
         # Reset y-axis label
         self.axes[1].set_ylabel('Agent')
-        self.axes[2].set_ylabel('PG')
+        self.axes[2].set_ylabel('AC')
         self.axes[3].set_ylabel('PV')
         for ax in self.axes:
             ax.set_xlim(xlim)  # Reset x-axis limit

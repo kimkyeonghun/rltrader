@@ -1,5 +1,4 @@
 import os
-import locale
 import logging
 import numpy as np
 import settings
@@ -7,9 +6,6 @@ from environment import Environment
 from agent import Agent
 from AC_LSTM import ACagent
 from visualizer import Visualizer
-
-
-locale.setlocale(locale.LC_ALL, 'ko_KR.UTF-8')
 
 
 class PolicyLearner:
@@ -30,6 +26,7 @@ class PolicyLearner:
         self.training_data = training_data  # Training data
         self.sample = None
         self.training_data_idx = -1
+
         # Policy neural network; Input size = size of training data + agent state size
         self.num_features = self.training_data.shape[1] + self.agent.STATE_DIM
         self.AC = ACagent(
@@ -74,8 +71,7 @@ class PolicyLearner:
         epoch_win_cnt = 0
 
         # Training repetition
-        for epoch in range(num_epoches):    
-        
+        for epoch in range(num_epoches):
             # Initialize the information about epoch
             #loss = 0.
             itr_cnt = 0
@@ -157,7 +153,7 @@ class PolicyLearner:
                     # Size of batch traning data
                     batch_size = min(batch_size, max_memory)
                     # Generate batch training data
-                    x, y = self._get_batch(
+                    x, _ = self._get_batch(
                         memory, batch_size, discount_factor, delayed_reward)
                     if len(x) > 0:
                         if delayed_reward > 0:
@@ -165,15 +161,10 @@ class PolicyLearner:
                         else:
                             neg_learning_cnt += 1
                         # Update Policy neural network
-
-                        
                         self.AC.train_model(self.sample,action,delayed_reward,next_sample)
-                        #loss += self.AC.actor_train_on_batch(x, y)
-                        #loss +=1
-
-
                         memory_learning_idx.append([itr_cnt, delayed_reward])
                     batch_size = 0
+
             # Visualize the information about epoches
             num_epoches_digit = len(str(num_epoches))
             epoch_str = str(epoch + 1).rjust(num_epoches_digit, '0')
@@ -189,19 +180,14 @@ class PolicyLearner:
                 epoch_summary_dir, 'epoch_summary_%s_%s.png' % (
                     settings.timestr, epoch_str)))
 
-            # Record the information about epoches in log
-            # locale.currency(self.agent.portfolio_value,grouping=True) won unicode error... how to fix?
-            if pos_learning_cnt + neg_learning_cnt > 0:
-                pass
-                #loss /= pos_learning_cnt + neg_learning_cnt
-            logging.info("[Epoch %s/%s]\tEpsilon:%.4f\t#Expl.:%d/%d\t"
-                        "#Buy:%d\t#Sell:%d\t#Hold:%d\t"
-                        "#Stocks:%d\tPV:%s\t"
-                        "POS:%s\tNEG:%s"%(
-                            epoch_str, num_epoches, epsilon, exploration_cnt, itr_cnt,
+            logging.info("[Epoch {}/{}]\tEpsilon:{}\t#Expl.:{}/{}\t"
+                        "#Buy:{}\t#Sell:{}\t#Hold:{}\t"
+                        "#Stocks:{}\tPV:{:,}원\t"
+                        "POS:{}\tNEG:{}".format(
+                            epoch_str, num_epoches, round(epsilon,4), exploration_cnt, itr_cnt,
                             self.agent.num_buy, self.agent.num_sell, self.agent.num_hold,
                             self.agent.num_stocks,
-                            self.agent.portfolio_value,
+                            int(self.agent.portfolio_value),
                             pos_learning_cnt, neg_learning_cnt))
 
             # Update the information about training
@@ -211,14 +197,14 @@ class PolicyLearner:
                 epoch_win_cnt += 1
 
         # Record the information about training in log
-        logging.info("Max PV: %s, \t # Win: %d" % (
-            max_portfolio_value, epoch_win_cnt))
+        logging.info("Max PV: {:,}원, \t # Win: {}".format(
+            int(max_portfolio_value), epoch_win_cnt))
 
     def _get_batch(self, memory, batch_size, discount_factor, delayed_reward):
         x = np.zeros((batch_size, 1, self.num_features))
         y = np.full((batch_size, self.agent.NUM_ACTIONS), 0.5)
 
-        for i, (sample, action, reward) in enumerate(
+        for i, (sample, action, _) in enumerate(
                 reversed(memory[-batch_size:])):
             x[i] = np.array(sample).reshape((-1, 1, self.num_features))
             y[i, action] = (delayed_reward + 1) / 2
