@@ -1,5 +1,4 @@
 import os
-import locale
 import logging
 import numpy as np
 import settings
@@ -7,10 +6,6 @@ from environment import Environment
 from agent import Agent
 from policy_network import PolicyNetwork
 from visualizer import Visualizer
-
-
-locale.setlocale(locale.LC_ALL, 'ko_KR.UTF-8')
-
 
 class PolicyLearner:
 
@@ -182,15 +177,15 @@ class PolicyLearner:
             # Record the information about epoches in log
             if pos_learning_cnt + neg_learning_cnt > 0:
                 loss /= pos_learning_cnt + neg_learning_cnt
-            logging.info("[Epoch %s/%s]\tEpsilon:%.4f\t#Expl.:%d/%d\t"
-                        "#Buy:%d\t#Sell:%d\t#Hold:%d\t"
-                        "#Stocks:%d\tPV:%s\t"
-                        "POS:%s\tNEG:%s\tLoss:%10.6f" % (
-                            epoch_str, num_epoches, epsilon, exploration_cnt, itr_cnt,
+            logging.info("[Epoch {}/{}]\tEpsilon:{}\t#Expl.:{}/{}\t"
+                        "#Buy:{}\t#Sell:{}\t#Hold:{}\t"
+                        "#Stocks:{}\tPV:{:,}원\t"
+                        "POS:{}\tNEG:{}\tLoss:{}".format(
+                            epoch_str, num_epoches, round(epsilon,4), exploration_cnt, itr_cnt,
                             self.agent.num_buy, self.agent.num_sell, self.agent.num_hold,
                             self.agent.num_stocks,
-                            locale.currency(self.agent.portfolio_value, grouping=True),
-                            pos_learning_cnt, neg_learning_cnt, loss))
+                            int(self.agent.portfolio_value),
+                            pos_learning_cnt, neg_learning_cnt,round(loss,6)))
 
             # Update the information about training
             max_portfolio_value = max(
@@ -199,8 +194,8 @@ class PolicyLearner:
                 epoch_win_cnt += 1
 
         # Record the information about training in log
-        logging.info("Max PV: %s, \t # Win: %d" % (
-            locale.currency(max_portfolio_value, grouping=True), epoch_win_cnt))
+        logging.info("Max PV: {:,}원, \t # Win: {}".format(
+            int(max_portfolio_value), epoch_win_cnt))
 
     def _get_batch(self, memory, batch_size, discount_factor, delayed_reward):
         x = np.zeros((batch_size, 1, self.num_features))

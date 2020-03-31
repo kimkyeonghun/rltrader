@@ -57,8 +57,8 @@ if __name__ == '__main__':
     training_data = data_manager.build_training_data(prep_data)
 
     # Date range filtering
-    training_data = training_data[(training_data['date'] >= '2020-01-01') &
-                                  (training_data['date'] <= '2020-02-28')]
+    training_data = training_data[(training_data['date'] >= '2019-01-01') &
+                                  (training_data['date'] <= '2019-12-31')]
     training_data = training_data.dropna()
 
     # Chart Data Separation

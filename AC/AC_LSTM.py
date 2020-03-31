@@ -32,13 +32,10 @@ class ACagent:
         actor = Sequential()
 
         actor.add(LSTM(256,input_shape=(1,self.input_dim), return_sequences=True, stateful=False, dropout=0.5))
-        actor.add(BatchNormalization())
         actor.add(LSTM(256, return_sequences=True, stateful=False, dropout=0.5))
-        actor.add(BatchNormalization())
         actor.add(LSTM(256, return_sequences=False, stateful=False, dropout=0.5))
-        actor.add(BatchNormalization())
         actor.add(Dense(self.output_dim))
-        actor.add(Activation('softmax'))
+        actor.add(Activation('sigmoid'))
 
         return actor
 
@@ -46,11 +43,7 @@ class ACagent:
 
         critic = Sequential()
 
-        critic.add(LSTM(256,input_shape=(1,self.input_dim), return_sequences=True, stateful=False, dropout=0.5))
-        critic.add(BatchNormalization())
-        critic.add(LSTM(256, return_sequences=True, stateful=False, dropout=0.5))
-        critic.add(BatchNormalization())
-        critic.add(LSTM(256, return_sequences=False, stateful=False, dropout=0.5))
+        critic.add(LSTM(128,input_shape=(1,self.input_dim), return_sequences=False, stateful=False, dropout=0.5))
         critic.add(BatchNormalization())
         critic.add(Dense(1,activation='linear'))
 

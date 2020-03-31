@@ -113,8 +113,6 @@ class PolicyLearner:
                     break
 
                 # Actions decided by policy neural network or exploration
-
-
                 action, confidence, exploration = self.agent.decide_action(
                     self.AC, self.sample, epsilon)
 

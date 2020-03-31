@@ -61,8 +61,8 @@ if __name__ == '__main__':
     training_data = data_manager.build_training_data(prep_data)
 
     # Date range filtering
-    training_data = training_data[(training_data['date'] >= '2019-01-01') &
-                                  (training_data['date'] <= '2019-12-31')]
+    training_data = training_data[(training_data['date'] >= '2018-01-01') &
+                                  (training_data['date'] <= '2018-12-31')]
     training_data = training_data.dropna()
 
     # Chart Data Separation
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # Strat reinforcement learning
     policy_learner = PolicyLearner(
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
-        min_trading_unit=1, max_trading_unit=2, delayed_reward_threshold=reward, lr=.001,tax=tax)
+        min_trading_unit=1, max_trading_unit=2, delayed_reward_threshold=reward, lr=.0001,tax=tax)
     policy_learner.fit(balance=bal, num_epoches=1000,
                        discount_factor=0, start_epsilon=.5)
 
