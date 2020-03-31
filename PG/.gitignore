@@ -104,6 +104,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+/temp/
+/data/
 /models/
 /logs/
 /epoch_summary/

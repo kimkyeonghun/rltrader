@@ -201,7 +201,7 @@ class PolicyLearner:
         x = np.zeros((batch_size, 1, self.num_features))
         y = np.full((batch_size, self.agent.NUM_ACTIONS), 0.5)
 
-        for i, (sample, action, reward) in enumerate(
+        for i, (sample, action, _) in enumerate(
                 reversed(memory[-batch_size:])):
             x[i] = np.array(sample).reshape((-1, 1, self.num_features))
             y[i, action] = (delayed_reward + 1) / 2

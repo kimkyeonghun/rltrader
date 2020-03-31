@@ -1,8 +1,8 @@
 pandas
 numpy
 matplotlib
-tensorflow
-keras
+tensorflow==1.14
+keras==2.0.8
 mpl_finance
 pykrx
 h5py
