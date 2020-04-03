@@ -23,7 +23,7 @@
 - Keras 2.0.8
 - https://nagy.tistory.com/26 아나콘다 설치 참조
 
-`conda create -n <virtual_environment_name> tensorflow-gpu=1.15`
+`conda create -n <virtual_environment_name> tensorflow-gpu=1.14`
 
 - Anaconda를 사용하여 원하는 가상환경을 만듭니다.
 - 이 명령어를 치면 필요한 환경들은 스스로 설치됩니다.
@@ -46,17 +46,17 @@
 `python main.py --code <stock_code> --tax <y or n> --bal <balance> --reward <delayed_reward_threshold>`
 
 - --code : 원하는 기업의 stock_code을 넣는다. 만약 해당 stock_code의 csv 파일을 가지고 있지 않으면 파일을 생성하며 가지고 있다면 어제 날짜까지 최신화하여 rewrite합니다. 
-  - default = kospi
+  - default = 'kospi'
 
 - --tax : 매매시 발생하는 거래세와 수수료를 고려하는지에 대한 여부를 나타냅니다.
-  - default = n
+  - default = 'n'
 
 - --bal : 학습시 초기 자금을 얼마로 할지 설정하는 option입니다.
   - default = 10000000
 - --reward : 지연보상의 임계치를 설정하는 option입니다.
   - default = .02(2%)
 
-학습하는 기간은 2019-01-01~2019-12-31이며 main.py의 60~61번 줄을 수정하여 바꿀 수 있습니다.
+학습하는 기간은 2018-01-01부터 2018-12-31까지이며 main.py의 64,65번 줄을 수정하여 바꿀 수 있습니다.
 
 ![train](./img/train.png)
 

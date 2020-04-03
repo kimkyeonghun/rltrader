@@ -78,8 +78,6 @@ class PolicyLearner:
             win_cnt = 0
             exploration_cnt = 0
             batch_size = 0
-            pos_learning_cnt = 0
-            neg_learning_cnt = 0
 
             # Initialize the memory
             memory_sample = []
@@ -154,10 +152,6 @@ class PolicyLearner:
                     x, _ = self._get_batch(
                         memory, batch_size, discount_factor, delayed_reward)
                     if len(x) > 0:
-                        if delayed_reward > 0:
-                            pos_learning_cnt += 1
-                        else:
-                            neg_learning_cnt += 1
                         # Update Policy neural network
                         self.AC.train_model(self.sample,action,delayed_reward,next_sample)
                         memory_learning_idx.append([itr_cnt, delayed_reward])
@@ -180,13 +174,11 @@ class PolicyLearner:
 
             logging.info("[Epoch {}/{}]\tEpsilon:{}\t#Expl.:{}/{}\t"
                         "#Buy:{}\t#Sell:{}\t#Hold:{}\t"
-                        "#Stocks:{}\tPV:{:,}원\t"
-                        "POS:{}\tNEG:{}".format(
+                        "#Stocks:{}\tPV:{:,}원\t".format(
                             epoch_str, num_epoches, round(epsilon,4), exploration_cnt, itr_cnt,
                             self.agent.num_buy, self.agent.num_sell, self.agent.num_hold,
                             self.agent.num_stocks,
-                            int(self.agent.portfolio_value),
-                            pos_learning_cnt, neg_learning_cnt))
+                            int(self.agent.portfolio_value)))
 
             # Update the information about training
             max_portfolio_value = max(
