@@ -35,7 +35,7 @@ class ACagent:
         actor.add(LSTM(256, return_sequences=True, stateful=False, dropout=0.5))
         actor.add(LSTM(256, return_sequences=False, stateful=False, dropout=0.5))
         actor.add(Dense(self.output_dim))
-        actor.add(Activation('sigmoid'))
+        actor.add(Activation('softmax'))
 
         return actor
 

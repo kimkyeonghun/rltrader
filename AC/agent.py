@@ -158,7 +158,7 @@ class Agent:
             (self.portfolio_value - self.base_portfolio_value) / self.base_portfolio_value)
 
         # Determine the immediate reward
-        self.immediate_reward = profitloss if profitloss >= 0 else -profitloss
+        self.immediate_reward = profitloss if profitloss >= 0 else -10
 
         # Determine the delayed reward
         if profitloss > self.delayed_reward_threshold:
@@ -166,7 +166,7 @@ class Agent:
             # Update base portfolio value by achieving target benefit
             self.base_portfolio_value = self.portfolio_value
         elif profitloss < -self.delayed_reward_threshold:
-            delayed_reward = -profitloss
+            delayed_reward = -10
             # Update base portfolio value by exceeding the loss trheshold
             self.base_portfolio_value = self.portfolio_value
         else:

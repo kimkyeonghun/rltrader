@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--code",type=str,default='kospi')
     parser.add_argument("--tax",type=str,default='n')
-    parser.add_argument("--bal",type=int,default=10000000)
+    parser.add_argument("--bal",type=int,default=1000000)
     parser.add_argument("--reward",type=float,default=.02)
     
     FLAGs, _ = parser.parse_known_args()
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     training_data = data_manager.build_training_data(prep_data)
 
     # Date range filtering
-    training_data = training_data[(training_data['date'] >= '2018-01-01') &
+    training_data = training_data[(training_data['date'] >= '2017-01-01') &
                                   (training_data['date'] <= '2018-12-31')]
     training_data = training_data.dropna()
 
@@ -70,14 +70,22 @@ if __name__ == '__main__':
     chart_data = training_data[features_chart_data]
 
     # Training data separation
+    # features_training_data = [
+    #     'open_lastclose_ratio', 'high_close_ratio', 'low_close_ratio',
+    #     'close_lastclose_ratio', 'volume_lastvolume_ratio',
+    #     'close_ma5_ratio', 'volume_ma5_ratio',
+    #     'close_ma10_ratio', 'volume_ma10_ratio',
+    #     'close_ma20_ratio', 'volume_ma20_ratio',
+    #     'close_ma60_ratio', 'volume_ma60_ratio',
+    #     'close_ma120_ratio', 'volume_ma120_ratio'
+    # ]
+    # Training data separation
     features_training_data = [
         'open_lastclose_ratio', 'high_close_ratio', 'low_close_ratio',
         'close_lastclose_ratio', 'volume_lastvolume_ratio',
         'close_ma5_ratio', 'volume_ma5_ratio',
         'close_ma10_ratio', 'volume_ma10_ratio',
-        'close_ma20_ratio', 'volume_ma20_ratio',
-        'close_ma60_ratio', 'volume_ma60_ratio',
-        'close_ma120_ratio', 'volume_ma120_ratio'
+        'close_ma20_ratio', 'volume_ma20_ratio'
     ]
     training_data = training_data[features_training_data]
 
@@ -85,7 +93,7 @@ if __name__ == '__main__':
     policy_learner = PolicyLearner(
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
         min_trading_unit=1, max_trading_unit=2, delayed_reward_threshold=reward, lr=.00001,tax=tax)
-    policy_learner.fit(balance=bal, num_epoches=1000,
+    policy_learner.fit(balance=bal, num_epoches=500,
                        discount_factor=0, start_epsilon=.5)
 
     # Save Policy Neural Network to File
