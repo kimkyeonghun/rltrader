@@ -39,7 +39,7 @@ class PolicyLearner:
 
     def fit(
         self, num_epoches=1000, max_memory=60, balance=10000000,
-        discount_factor=0, start_epsilon=.5, learning=True):
+        discount_factor=0, start_epsilon=.5, learning=True,monkey=False):
         logging.info("\n\nAcotr LR: {Alr}, Critic LR: {Clr}, DF: {discount_factor}, "
                     "TU: [{min_trading_unit}, {max_trading_unit}], "
                     "DRT: {delayed_reward_threshold}, Tax: {tax}".format(
@@ -99,10 +99,13 @@ class PolicyLearner:
             self.visualizer.clear([0, len(self.chart_data)])
 
             # Exploration rate decreases as you progress
-            if learning:
-                epsilon = start_epsilon * (1. - float(epoch) / (num_epoches - 1))
-            else:
-                epsilon = 0
+            if monkey:
+                epsilon = 1
+            else:    
+                if learning:
+                    epsilon = start_epsilon * (1. - float(epoch) / (num_epoches - 1))
+                else:
+                    epsilon = 0
 
             while True:
                 # Sample generation

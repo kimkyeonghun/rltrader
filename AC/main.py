@@ -17,6 +17,7 @@ if __name__ == '__main__':
     parser.add_argument("--tax",type=str,default='n')
     parser.add_argument("--bal",type=int,default=1000000)
     parser.add_argument("--reward",type=float,default=.02)
+    parser.add_argument("--monkey",type=bool,default = False)
     
     FLAGs, _ = parser.parse_known_args()
     
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     tax=FLAGs.tax
     bal=FLAGs.bal
     reward=FLAGs.reward
+    monkey=FLAGs.monkey    
 
     stock = DataLoader(stock_code)
 
@@ -94,7 +96,7 @@ if __name__ == '__main__':
         stock_code=stock_code, chart_data=chart_data, training_data=training_data,
         min_trading_unit=1, max_trading_unit=2, delayed_reward_threshold=reward, lr=.00001,tax=tax)
     policy_learner.fit(balance=bal, num_epoches=500,
-                       discount_factor=0, start_epsilon=.5)
+                       discount_factor=0, start_epsilon=.5,monkey=monkey)
 
     # Save Policy Neural Network to File
     model_dir = os.path.join(settings.BASE_DIR, 'models/%s' % stock_code)

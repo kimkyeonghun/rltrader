@@ -21,9 +21,10 @@ class Visualizer:
         # Volume visualization
         x = np.arange(len(chart_data))
         volume = np.array(chart_data)[:, -1].tolist()
-        self.axes[0].bar(x, volume, color='b', alpha=0.3)
+        self.axes[0].bar(chart_data["date"], volume, color='b', alpha=0.3)
         # ohlc stands for open, high, low and close, it is a two-dimensional array in this order
         ax = self.axes[0].twinx()
+        ax.set_title("Daily Chart")
         ohlc = np.hstack((x.reshape(-1, 1), np.array(chart_data)[:, 1:-1]))
         # Bar chart output to self.axes [0]
         # Positive chart is in red, negative chart is in blue

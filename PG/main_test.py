@@ -20,7 +20,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--code",type=str,default='015760')
     parser.add_argument("--tax",type=str,default='n')
-    parser.add_argument("--bal",type=int,default=10000000)
+    parser.add_argument("--bal",type=int,default=1000000)
     parser.add_argument("--reward",type=float,default=.02)
 
     FLAGs, _ = parser.parse_known_args()
@@ -71,9 +71,7 @@ if __name__ == '__main__':
         'close_lastclose_ratio', 'volume_lastvolume_ratio',
         'close_ma5_ratio', 'volume_ma5_ratio',
         'close_ma10_ratio', 'volume_ma10_ratio',
-        'close_ma20_ratio', 'volume_ma20_ratio',
-        'close_ma60_ratio', 'volume_ma60_ratio',
-        'close_ma120_ratio', 'volume_ma120_ratio'
+        'close_ma20_ratio', 'volume_ma20_ratio'
     ]
     training_data = training_data[features_training_data]
 
