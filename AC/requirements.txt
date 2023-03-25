@@ -1,7 +1,7 @@
 pandas
 numpy
 matplotlib
-tensorflow==2.5.0
+tensorflow==2.11.1
 keras==2.0.8
 mpl_finance
 pykrx
